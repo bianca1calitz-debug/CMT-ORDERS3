@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMT Chemicals Internal Orders</title>
+  <style>
+    :root {
+      --bg: #fff7fb;
+      --panel: #ffffff;
+      --panel-soft: #fff0f7;
+      --line: #f1cddd;
+      --text: #4a3240;
+      --muted: #866879;
+      --accent: #e88ab5;
+      --accent-dark: #d5689b;
+      --success: #dff4e8;
+      --warning: #fff1d8;
+      --danger: #fde1e7;
+      --shadow: 0 12px 30px rgba(206, 114, 158, 0.12);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #fff8fc 0%, #fff2f8 100%);
+      color: var(--text);
+    }
+
+    .wrap { max-width: 1250px; margin: 0 auto; padding: 24px; }
+
+    .hero {
+      background: linear-gradient(135deg, #ffe4f0, #fff8fc);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 { margin: 0 0 6px; }
+    p { margin: 0; color: var(--muted); }
+
+    .grid { display: grid; grid-template-columns: 1.25fr 0.95fr; gap: 20px; }
+
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 14px 18px;
+      background: var(--panel-soft);
+      font-weight: bold;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-body { padding: 18px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      display:block;
+      margin-bottom:4px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #e9c7d8;
+      margin-top: 4px;
+      background: white;
+      color: var(--text);
+    }
+
+    textarea { min-height: 86px; resize: vertical; }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .primary { background: var(--accent); color: white; }
+    .secondary { background: #f8dbe7; color: var(--text); }
+    .ghost { background: #fff4f8; color: var(--text); border: 1px solid #f1cddd; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #f1cddd;
+      font-size: 0.9rem;
+      vertical-align: top;
+    }
+
+    th { background: #ffe9f3; text-align: left; }
+
+    .status {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .summary-box {
+      background: #fffafd;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .summary-box small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .summary-box strong {
+      font-size: 1.25rem;
+    }
+
+    .products-wrap {
+      border: 1px solid #f1cddd;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .product-row {
+      display: grid;
+      grid-template-columns: 2.2fr 0.8fr 0.8fr 1fr 0.9fr auto;
+      gap: 10px;
+      padding: 12px;
+      border-bottom: 1px solid #f7dfe9;
+      align-items: end;
+      background: #fffdfd;
+    }
+
+    .product-row:last-child { border-bottom: none; }
+
+    .mini-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .line-total {
+      background: #fff4f8;
+      border: 1px solid #f1cddd;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .total-strip {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: #fff4f8;
+      border: 1px solid #f1cddd;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-weight: bold;
+    }
+
+    .chart-card {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffafd;
+    }
+
+    .chart-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 1.6fr 3fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      background: #fdebf3;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ebb0ca, #e88ab5);
+      min-width: 6px;
+    }
+
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+
+    .paid { background: var(--success); }
+    .pending { background: var(--warning); }
+    .overdue { background: var(--danger); }
+    .processing { background: var(--warning); }
+    .delivered { background: var(--success); }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 1000px) {
+      .grid, .form-grid, .summary-grid { grid-template-columns: 1fr; }
+      .product-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="hero">
+      <h1>CMT Chemicals Internal Orders</h1>
+      <p>Simple internal tracking system in Rand (R). Same look, now with cents, multiple products, DD/MM/YYYY dates, and summary charts.</p>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-header">Add Order</div>
+        <div class="card-body">
+          <form id="form">
+
+            <div class="form-grid">
+              <div>
+                <label for="po">Purchase Order</label>
+                <input id="po" required>
+              </div>
+
+              <div>
+                <label for="date">Date (DD/MM/YYYY)</label>
+                <input id="date" placeholder="DD/MM/YYYY" required>
+              </div>
+
+              <div class="full">
+                <label for="customer">Customer</label>
+                <input id="customer" required>
+              </div>
+
+              <div>
+                <label for="payment">Payment</label>
+                <select id="payment">
+                  <option>Pending</option>
+                  <option>Paid</option>
+                  <option>Overdue</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="delivery">Delivery</label>
+                <select id="delivery">
+                  <option>Processing</option>
+                  <option>Delivered</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="rep">Handled By</label>
+                <input id="rep">
+              </div>
+
+              <div>
+                <label for="due">Due Date (DD/MM/YYYY)</label>
+                <input id="due" placeholder="DD/MM/YYYY">
+              </div>
+
+              <div class="full">
+                <label for="notes">Notes</label>
+                <textarea id="notes"></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;">
+              <label>Products</label>
+              <div class="products-wrap" id="productsWrap"></div>
+              <div class="btn-row">
+                <button type="button" class="secondary" id="addProductBtn">+ Add Product</button>
+              </div>
+              <div class="total-strip">
+                <span>Total Products: <span id="productCount">1</span></span>
+                <span>Order Total: <span id="orderTotal">R 0.00</span></span>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button type="submit" class="primary">Save</button>
+            </div>
+            <div class="status" id="status">Ready</div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Summary</div>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-box">
+              <small>Total Orders</small>
+              <strong id="count">0</strong>
+            </div>
+            <div class="summary-box">
+              <small>Total Value</small>
+              <strong id="total">R 0.00</strong>
+            </div>
+            <div class="summary-box">
+              <small>Top Customer</small>
+              <strong id="topCustomer">-</strong>
+            </div>
+            <div class="summary-box">
+              <small>Top Staff Member</small>
+              <strong id="topRep">-</strong>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-title">Products We Sell The Most</div>
+            <div id="productsChart" class="muted">No data yet</div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-title">Customers Who Buy The Most</div>
+            <div id="customersChart" class="muted">No data yet</div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-title">Who Has The Most Orders</div>
+            <div id="repsChart" class="muted">No data yet</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-header">Orders</div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Purchase Order</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Products</th>
+              <th>Handled By</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="table"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const table = document.getElementById('table');
+    const statusEl = document.getElementById('status');
+    const storageKey = 'cmt_internal_orders_simple_v3';
+    const productsWrap = document.getElementById('productsWrap');
+    const addProductBtn = document.getElementById('addProductBtn');
+    const orderTotalEl = document.getElementById('orderTotal');
+    const productCountEl = document.getElementById('productCount');
+
+    function setStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function formatCurrency(value) {
+      return 'R ' + Number(value || 0).toFixed(2);
+    }
+
+    function isValidDateDDMMYYYY(value) {
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) return false;
+      const [dd, mm, yyyy] = value.split('/').map(Number);
+      const date = new Date(yyyy, mm - 1, dd);
+      return date.getFullYear() === yyyy && date.getMonth() === mm - 1 && date.getDate() === dd;
+    }
+
+    function createProductRow(product = '', qty = '', unit = 'units', price = '') {
+      const row = document.createElement('div');
+      row.className = 'product-row';
+      row.innerHTML = `
+        <div>
+          <div class="mini-label">Product</div>
+          <input class="prod-name" value="${product}">
+        </div>
+        <div>
+          <div class="mini-label">Quantity</div>
+          <input type="number" class="prod-qty" min="0" step="1" value="${qty}">
+        </div>
+        <div>
+          <div class="mini-label">Unit</div>
+          <select class="prod-unit">
+            <option ${unit === 'L' ? 'selected' : ''}>L</option>
+            <option ${unit === 'kg' ? 'selected' : ''}>kg</option>
+            <option ${unit === 'units' ? 'selected' : ''}>units</option>
+            <option ${unit === 'drums' ? 'selected' : ''}>drums</option>
+            <option ${unit === 'boxes' ? 'selected' : ''}>boxes</option>
+          </select>
+        </div>
+        <div>
+          <div class="mini-label">Unit Price (R)</div>
+          <input type="number" class="prod-price" min="0" step="0.01" value="${price}">
+        </div>
+        <div>
+          <div class="mini-label">Line Total</div>
+          <div class="line-total">R 0.00</div>
+        </div>
+        <div>
+          <button type="button" class="ghost remove-product">Remove</button>
+        </div>
+      `;
+
+      row.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('input', updateOrderTotal);
+        el.addEventListener('change', updateOrderTotal);
+      });
+
+      row.querySelector('.remove-product').addEventListener('click', () => {
+        if (productsWrap.children.length > 1) {
+          row.remove();
+          updateOrderTotal();
+        } else {
+          row.querySelector('.prod-name').value = '';
+          row.querySelector('.prod-qty').value = '';
+          row.querySelector('.prod-unit').value = 'units';
+          row.querySelector('.prod-price').value = '';
+          updateOrderTotal();
+        }
+      });
+
+      productsWrap.appendChild(row);
+      updateOrderTotal();
+    }
+
+    function updateOrderTotal() {
+      const rows = [...productsWrap.querySelectorAll('.product-row')];
+      let orderTotal = 0;
+
+      rows.forEach(row => {
+        const qty = Number(row.querySelector('.prod-qty').value || 0);
+        const price = Number(row.querySelector('.prod-price').value || 0);
+        const lineTotal = qty * price;
+        row.querySelector('.line-total').textContent = formatCurrency(lineTotal);
+        orderTotal += lineTotal;
+      });
+
+      orderTotalEl.textContent = formatCurrency(orderTotal);
+      productCountEl.textContent = rows.length;
+    }
+
+    function getProductsFromForm() {
+      return [...productsWrap.querySelectorAll('.product-row')].map(row => ({
+        product: row.querySelector('.prod-name').value.trim(),
+        qty: Number(row.querySelector('.prod-qty').value || 0),
+        unit: row.querySelector('.prod-unit').value,
+        price: Number(row.querySelector('.prod-price').value || 0),
+        lineTotal: Number(row.querySelector('.prod-qty').value || 0) * Number(row.querySelector('.prod-price').value || 0)
+      })).filter(p => p.product);
+    }
+
+    function renderBars(targetId, items, valueFormatter = (v) => v) {
+      const target = document.getElementById(targetId);
+      if (!items.length) {
+        target.innerHTML = '<div class="muted">No data yet</div>';
+        return;
+      }
+
+      const max = Math.max(...items.map(i => i.value), 1);
+      target.innerHTML = items.slice(0, 5).map(item => `
+        <div class="bar-row">
+          <div>${item.label}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(item.value / max) * 100}%"></div></div>
+          <div>${valueFormatter(item.value)}</div>
+        </div>
+      `).join('');
+    }
+
+    function load() {
+      const data = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      table.innerHTML = '';
+      let total = 0;
+
+      const productTotals = {};
+      const customerTotals = {};
+      const repTotals = {};
+
+      data.forEach(order => {
+        total += Number(order.total || 0);
+
+        const productsText = (order.products || []).map(p =>
+          `${p.product} (${p.qty} ${p.unit})`
+        ).join('<br>');
+
+        table.innerHTML += `<tr>
+          <td>${order.po}</td>
+          <td>${order.date}</td>
+          <td>${order.customer}</td>
+          <td>${productsText}</td>
+          <td>${order.rep || ''}</td>
+          <td>${formatCurrency(order.total)}</td>
+        </tr>`;
+
+        (order.products || []).forEach(p => {
+          productTotals[p.product] = (productTotals[p.product] || 0) + Number(p.qty || 0);
+        });
+
+        customerTotals[order.customer] = (customerTotals[order.customer] || 0) + Number(order.total || 0);
+
+        if (order.rep) {
+          repTotals[order.rep] = (repTotals[order.rep] || 0) + 1;
+        }
+      });
+
+      document.getElementById('count').innerText = data.length;
+      document.getElementById('total').innerText = formatCurrency(total);
+
+      const topCustomerEntry = Object.entries(customerTotals).sort((a, b) => b[1] - a[1])[0];
+      const topRepEntry = Object.entries(repTotals).sort((a, b) => b[1] - a[1])[0];
+
+      document.getElementById('topCustomer').innerText = topCustomerEntry ? topCustomerEntry[0] : '-';
+      document.getElementById('topRep').innerText = topRepEntry ? topRepEntry[0] : '-';
+
+      renderBars(
+        'productsChart',
+        Object.entries(productTotals).sort((a, b) => b[1] - a[1]).map(([label, value]) => ({ label, value })),
+        v => String(v)
+      );
+
+      renderBars(
+        'customersChart',
+        Object.entries(customerTotals).sort((a, b) => b[1] - a[1]).map(([label, value]) => ({ label, value })),
+        v => formatCurrency(v)
+      );
+
+      renderBars(
+        'repsChart',
+        Object.entries(repTotals).sort((a, b) => b[1] - a[1]).map(([label, value]) => ({ label, value })),
+        v => String(v)
+      );
+    }
+
+    addProductBtn.addEventListener('click', () => createProductRow());
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      try {
+        const orderDate = document.getElementById('date').value.trim();
+        const dueDate = document.getElementById('due').value.trim();
+        if (!isValidDateDDMMYYYY(orderDate)) {
+          setStatus('Please use DD/MM/YYYY for Date');
+          return;
+        }
+        if (dueDate && !isValidDateDDMMYYYY(dueDate)) {
+          setStatus('Please use DD/MM/YYYY for Due Date');
+          return;
+        }
+
+        const products = getProductsFromForm();
+        if (!products.length) {
+          setStatus('Please add at least one product');
+          return;
+        }
+
+        const total = products.reduce((sum, p) => sum + p.lineTotal, 0);
+        const data = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+        data.push({
+          po: document.getElementById('po').value.trim(),
+          date: orderDate,
+          customer: document.getElementById('customer').value.trim(),
+          payment: document.getElementById('payment').value,
+          delivery: document.getElementById('delivery').value,
+          rep: document.getElementById('rep').value.trim(),
+          due: dueDate,
+          notes: document.getElementById('notes').value.trim(),
+          products,
+          total
+        });
+
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        form.reset();
+        productsWrap.innerHTML = '';
+        createProductRow();
+        setStatus('Saved successfully');
+        load();
+      } catch (error) {
+        console.error(error);
+        setStatus('Could not save in this browser');
+      }
+    });
+
+    createProductRow();
+    load();
+  </script>
+</body>
+</html>
